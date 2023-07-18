@@ -1,7 +1,3 @@
-import { Inter } from 'next/font/google';
-
-const font = Inter({ subsets: ['latin'] });
-
 export default function Home() {
-  return <main className={font.className}>ws-chat</main>;
+  return <main>ws-chat</main>;
 }

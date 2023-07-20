@@ -99,6 +99,7 @@ export function Room({ username }: RoomProps) {
         <>
           <form onSubmit={onSendMessage} className='flex gap-4'>
             <Input
+              className='w-full'
               value={message}
               onChange={onMessageChange}
               placeholder='Введите сообщение'

@@ -21,15 +21,21 @@ export function Room({ username }: RoomProps) {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [wasConnected, setWasConnected] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [isConnectionDropped, setIsConnectionDropped] = useState(false);
+  const [wasConnectedBeforeError, setWasConnectedBeforeError] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const socket = useRef<WebSocket | null>(null);
 
-  const connect = useCallback(() => {
+  const clearConnection = () => {
     setIsConnected(false);
-    setIsConnectionDropped(false);
+    setWasConnectedBeforeError(false);
     setError(null);
+    socket.current?.close();
+    socket.current = null;
+  };
+
+  const connect = useCallback(() => {
+    clearConnection();
     socket.current = new WebSocket('ws://localhost:5000');
 
     socket.current.onopen = () => {
@@ -52,7 +58,7 @@ export function Room({ username }: RoomProps) {
 
     socket.current.onclose = (e) => {
       setIsConnected(false);
-      setIsConnectionDropped(true);
+      setWasConnectedBeforeError(true);
       setError('Подключение не удалось или было прервано');
     };
     socket.current.onerror = (e) => {
@@ -100,7 +106,7 @@ export function Room({ username }: RoomProps) {
           </Button>
         )}
       </div>
-      {(isConnected || (wasConnected && isConnectionDropped)) && (
+      {(isConnected || (wasConnected && wasConnectedBeforeError)) && (
         <>
           <form onSubmit={onSendMessage} className='flex gap-4'>
             <Input

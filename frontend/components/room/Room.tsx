@@ -93,13 +93,16 @@ export function Room({ username }: RoomProps) {
           </Button>
         </form>
       )}
-      <div>
+      <div className='flex flex-col gap-1'>
         {messages.map((message) => (
           <div key={message.id}>
-            <div>
-              <b>{message.username}:</b> {message.message}
+            <div className='flex justify-between'>
+              <b>{message.username}</b>
+              <div className='text-sm'>
+                {format(new Date(message.date), 'H:mm')}
+              </div>
             </div>
-            <div>{format(new Date(message.date), 'H:mm MMMM dd')}</div>
+            <div>{message.message}</div>
           </div>
         ))}
       </div>

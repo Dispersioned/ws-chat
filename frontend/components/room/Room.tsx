@@ -3,6 +3,7 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '../tailwind/input';
 import { Button } from '../tailwind/button';
+import { format } from 'date-fns';
 
 type RoomProps = {
   username: string;
@@ -22,10 +23,11 @@ export function Room({ username }: RoomProps) {
 
       socket.current.onopen = () => {
         setIsConnected(true);
-        const message = {
+        const message: IMessage = {
           event: 'connection',
           username,
           id: uuidv4(),
+          date: new Date(),
           message: 'подключился к чату',
         };
         socket.current?.send(JSON.stringify(message));
@@ -59,13 +61,16 @@ export function Room({ username }: RoomProps) {
     const msg: IMessage = {
       event: 'message',
       id: uuidv4(),
-      date: new Date(),
+      date: new Date().toString(),
       message,
       username,
     };
+    console.log('msg', msg);
     socket.current?.send(JSON.stringify(msg));
     setMessage('');
   };
+
+  console.log('messages', messages);
 
   return (
     <div>
@@ -91,7 +96,10 @@ export function Room({ username }: RoomProps) {
       <div>
         {messages.map((message) => (
           <div key={message.id}>
-            <b>{message.username}:</b> {message.message}
+            <div>
+              <b>{message.username}:</b> {message.message}
+            </div>
+            <div>{format(new Date(message.date), 'H:mm MMMM dd')}</div>
           </div>
         ))}
       </div>

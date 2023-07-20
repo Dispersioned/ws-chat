@@ -1,4 +1,6 @@
 import { Room } from '@/components/room';
+import { Button } from '@/components/tailwind/button';
+import { Input } from '@/components/tailwind/input';
 import { useState } from 'react';
 
 export function LoginScreen() {
@@ -15,20 +17,15 @@ export function LoginScreen() {
         <Room username={username} />
       ) : (
         <div className='lg flex w-full max-w-sm flex-col gap-3'>
-          <input
+          <Input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className='focus: w-full rounded border-2 p-2 shadow focus:border-blue-500 focus:shadow-md focus:outline-none'
             type='text'
             placeholder='Username'
           />
-          <button
-            onClick={onJoin}
-            disabled={!username.length}
-            className='w-full rounded border-2  bg-blue-500 p-2 text-white focus:border-blue-700 focus:outline-none disabled:bg-blue-400'
-          >
+          <Button onClick={onJoin} disabled={!username.length}>
             join chat
-          </button>
+          </Button>
         </div>
       )}
     </main>

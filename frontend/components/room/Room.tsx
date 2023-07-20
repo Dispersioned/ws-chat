@@ -8,10 +8,9 @@ import {
   useState,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Input } from '../tailwind/input';
-import { Button } from '../tailwind/button';
-import { format } from 'date-fns';
 import { Message } from '../message';
+import { Button } from '../tailwind/button';
+import { Input } from '../tailwind/input';
 
 type RoomProps = {
   username: string;
@@ -115,7 +114,11 @@ export function Room({ username }: RoomProps) {
               onChange={onMessageChange}
               placeholder='Введите сообщение'
             />
-            <Button className='w-1/3' disabled={!message.length} type='submit'>
+            <Button
+              className='w-1/3'
+              disabled={!message.length || !!error}
+              type='submit'
+            >
               Отправить
             </Button>
           </form>

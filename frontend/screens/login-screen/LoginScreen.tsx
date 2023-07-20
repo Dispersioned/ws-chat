@@ -16,17 +16,20 @@ export function LoginScreen() {
       {isLogged ? (
         <Room username={username} />
       ) : (
-        <div className='lg flex w-full max-w-sm flex-col gap-3'>
+        <form
+          onSubmit={onJoin}
+          className='lg flex w-full max-w-sm flex-col gap-3'
+        >
           <Input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             type='text'
             placeholder='Username'
           />
-          <Button onClick={onJoin} disabled={!username.length}>
-            join chat
+          <Button type='submit' disabled={!username.length}>
+            Join chat
           </Button>
-        </div>
+        </form>
       )}
     </main>
   );

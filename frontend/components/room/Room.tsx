@@ -18,16 +18,16 @@ type RoomProps = {
 
 export function Room({ username }: RoomProps) {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [wasConnected, setWasConnected] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
   const [wasConnectedBeforeError, setWasConnectedBeforeError] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isConnectionDropped, setIsConnectionDropped] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const socket = useRef<WebSocket | null>(null);
 
   const clearConnection = () => {
     setIsConnected(false);
-    setWasConnectedBeforeError(false);
+    setIsConnectionDropped(false);
     setError(null);
     socket.current?.close();
     socket.current = null;
@@ -39,7 +39,7 @@ export function Room({ username }: RoomProps) {
 
     socket.current.onopen = () => {
       setIsConnected(true);
-      setWasConnected(true);
+      setWasConnectedBeforeError(true);
       const message: IMessage = {
         event: 'connection',
         username,
@@ -57,7 +57,7 @@ export function Room({ username }: RoomProps) {
 
     socket.current.onclose = (e) => {
       setIsConnected(false);
-      setWasConnectedBeforeError(true);
+      setIsConnectionDropped(true);
       setError('Подключение не удалось или было прервано');
     };
     socket.current.onerror = (e) => {
@@ -105,7 +105,7 @@ export function Room({ username }: RoomProps) {
           </Button>
         )}
       </div>
-      {(isConnected || (wasConnected && wasConnectedBeforeError)) && (
+      {(isConnected || (wasConnectedBeforeError && isConnectionDropped)) && (
         <>
           <form onSubmit={onSendMessage} className='flex gap-4'>
             <Input

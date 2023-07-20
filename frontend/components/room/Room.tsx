@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Input } from '../tailwind/input';
 import { Button } from '../tailwind/button';
 import { format } from 'date-fns';
+import { Message } from '../message';
 
 type RoomProps = {
   username: string;
@@ -109,15 +110,7 @@ export function Room({ username }: RoomProps) {
           <div className=' max-h-[70vh] overflow-auto rounded border p-2 pr-2 shadow-sm'>
             <div className='flex  flex-col gap-1'>
               {messages.map((message) => (
-                <div key={message.id}>
-                  <div className='flex justify-between'>
-                    <b>{message.username}</b>
-                    <div className='text-sm'>
-                      {format(new Date(message.date), 'H:mm')}
-                    </div>
-                  </div>
-                  <div className='pr-5'>{message.message}</div>
-                </div>
+                <Message key={message.id} message={message} />
               ))}
             </div>
           </div>

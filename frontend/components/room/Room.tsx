@@ -19,18 +19,22 @@ type RoomProps = {
 
 export function Room({ username }: RoomProps) {
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [wasConnected, setWasConnected] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [isConnectionDropped, setIsConnectionDropped] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const socket = useRef<WebSocket | null>(null);
 
   const connect = useCallback(() => {
     setIsConnected(false);
+    setIsConnectionDropped(false);
     setError(null);
     socket.current = new WebSocket('ws://localhost:5000');
 
     socket.current.onopen = () => {
       setIsConnected(true);
+      setWasConnected(true);
       const message: IMessage = {
         event: 'connection',
         username,
@@ -48,6 +52,7 @@ export function Room({ username }: RoomProps) {
 
     socket.current.onclose = (e) => {
       setIsConnected(false);
+      setIsConnectionDropped(true);
       setError('Подключение не удалось или было прервано');
     };
     socket.current.onerror = (e) => {
@@ -95,7 +100,7 @@ export function Room({ username }: RoomProps) {
           </Button>
         )}
       </div>
-      {isConnected && (
+      {(isConnected || (wasConnected && isConnectionDropped)) && (
         <>
           <form onSubmit={onSendMessage} className='flex gap-4'>
             <Input

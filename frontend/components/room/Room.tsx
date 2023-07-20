@@ -74,7 +74,7 @@ export function Room({ username }: RoomProps) {
 
   return (
     <div className='flex w-full max-w-lg flex-col gap-2'>
-      <div>
+      <div className='text-center'>
         {(() => {
           if (error) return error;
           if (!isConnected) return `Подключаемся...`;
@@ -82,32 +82,34 @@ export function Room({ username }: RoomProps) {
         })()}
       </div>
       {isConnected && (
-        <form onSubmit={onSendMessage} className='flex gap-4'>
-          <Input
-            value={message}
-            onChange={onMessageChange}
-            placeholder='Введите сообщение'
-          />
-          <Button className='w-1/3' disabled={!message.length} type='submit'>
-            Отправить
-          </Button>
-        </form>
-      )}
-      <div className=' max-h-[70vh] overflow-auto rounded border p-2 pr-2 shadow-sm'>
-        <div className='flex  flex-col gap-1'>
-          {messages.map((message) => (
-            <div key={message.id}>
-              <div className='flex justify-between'>
-                <b>{message.username}</b>
-                <div className='text-sm'>
-                  {format(new Date(message.date), 'H:mm')}
+        <>
+          <form onSubmit={onSendMessage} className='flex gap-4'>
+            <Input
+              value={message}
+              onChange={onMessageChange}
+              placeholder='Введите сообщение'
+            />
+            <Button className='w-1/3' disabled={!message.length} type='submit'>
+              Отправить
+            </Button>
+          </form>
+          <div className=' max-h-[70vh] overflow-auto rounded border p-2 pr-2 shadow-sm'>
+            <div className='flex  flex-col gap-1'>
+              {messages.map((message) => (
+                <div key={message.id}>
+                  <div className='flex justify-between'>
+                    <b>{message.username}</b>
+                    <div className='text-sm'>
+                      {format(new Date(message.date), 'H:mm')}
+                    </div>
+                  </div>
+                  <div className='pr-5'>{message.message}</div>
                 </div>
-              </div>
-              <div className='pr-5'>{message.message}</div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

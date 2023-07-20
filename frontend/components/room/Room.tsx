@@ -73,7 +73,7 @@ export function Room({ username }: RoomProps) {
   console.log('messages', messages);
 
   return (
-    <div>
+    <div className='flex w-full max-w-lg flex-col gap-2'>
       <div>
         {(() => {
           if (error) return error;
@@ -82,29 +82,31 @@ export function Room({ username }: RoomProps) {
         })()}
       </div>
       {isConnected && (
-        <form onSubmit={onSendMessage}>
+        <form onSubmit={onSendMessage} className='flex gap-4'>
           <Input
             value={message}
             onChange={onMessageChange}
             placeholder='Введите сообщение'
           />
-          <Button disabled={!message.length} type='submit'>
+          <Button className='w-1/3' disabled={!message.length} type='submit'>
             Отправить
           </Button>
         </form>
       )}
-      <div className='flex flex-col gap-1'>
-        {messages.map((message) => (
-          <div key={message.id}>
-            <div className='flex justify-between'>
-              <b>{message.username}</b>
-              <div className='text-sm'>
-                {format(new Date(message.date), 'H:mm')}
+      <div className=' max-h-[70vh] overflow-auto rounded border p-2 pr-2 shadow-sm'>
+        <div className='flex  flex-col gap-1'>
+          {messages.map((message) => (
+            <div key={message.id}>
+              <div className='flex justify-between'>
+                <b>{message.username}</b>
+                <div className='text-sm'>
+                  {format(new Date(message.date), 'H:mm')}
+                </div>
               </div>
+              <div className='pr-5'>{message.message}</div>
             </div>
-            <div>{message.message}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

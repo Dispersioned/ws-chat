@@ -1,5 +1,12 @@
 import { IMessage } from '@/types/chat';
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Input } from '../tailwind/input';
 import { Button } from '../tailwind/button';
@@ -16,39 +23,41 @@ export function Room({ username }: RoomProps) {
 
   const socket = useRef<WebSocket | null>(null);
 
-  useEffect(() => {
-    function connect() {
-      if (!socket.current)
-        socket.current = new WebSocket('ws://localhost:5000');
+  const connect = useCallback(() => {
+    setIsConnected(false);
+    setError(null);
+    socket.current = new WebSocket('ws://localhost:5000');
 
-      socket.current.onopen = () => {
-        setIsConnected(true);
-        const message: IMessage = {
-          event: 'connection',
-          username,
-          id: uuidv4(),
-          date: new Date(),
-          message: 'подключился к чату',
-        };
-        socket.current?.send(JSON.stringify(message));
+    socket.current.onopen = () => {
+      setIsConnected(true);
+      const message: IMessage = {
+        event: 'connection',
+        username,
+        id: uuidv4(),
+        date: new Date(),
+        message: 'подключился к чату',
       };
+      socket.current?.send(JSON.stringify(message));
+    };
 
-      socket.current.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        setMessages((messages) => [...messages, message]);
-      };
+    socket.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages((messages) => [...messages, message]);
+    };
 
-      socket.current.onclose = (e) => {
-        setIsConnected(false);
-        setError('Подключение не удалось или было прервано');
-      };
-      socket.current.onerror = (e) => {
-        setIsConnected(false);
-        setError('Произошла ошибка при подключении к серверу');
-      };
-    }
-    connect();
+    socket.current.onclose = (e) => {
+      setIsConnected(false);
+      setError('Подключение не удалось или было прервано');
+    };
+    socket.current.onerror = (e) => {
+      setIsConnected(false);
+      setError('Произошла ошибка при подключении к серверу');
+    };
   }, [username]);
+
+  useEffect(() => {
+    connect();
+  }, [connect]);
 
   const [message, setMessage] = useState('');
 
@@ -65,21 +74,25 @@ export function Room({ username }: RoomProps) {
       message,
       username,
     };
-    console.log('msg', msg);
     socket.current?.send(JSON.stringify(msg));
     setMessage('');
   };
 
-  console.log('messages', messages);
-
   return (
     <div className='flex w-full max-w-lg flex-col gap-2'>
-      <div className='text-center'>
-        {(() => {
-          if (error) return error;
-          if (!isConnected) return `Подключаемся...`;
-          return `Привет, ${username}. Ты подключился к чату`;
-        })()}
+      <div className='flex flex-col items-center gap-2'>
+        <div>
+          {(() => {
+            if (error) return error;
+            if (!isConnected) return `Подключаемся...`;
+            return `Привет, ${username}. Ты подключился к чату`;
+          })()}
+        </div>
+        {error && (
+          <Button className='max-w-xs' onClick={connect}>
+            Переподключиться
+          </Button>
+        )}
       </div>
       {isConnected && (
         <>

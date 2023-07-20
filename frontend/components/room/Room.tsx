@@ -57,7 +57,7 @@ export function Room({ username }: RoomProps) {
   }, [username]);
 
   useEffect(() => {
-    connect();
+    if (!socket.current) connect();
   }, [connect]);
 
   const [message, setMessage] = useState('');

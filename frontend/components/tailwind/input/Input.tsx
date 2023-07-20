@@ -5,10 +5,10 @@ type InputProps = DetailedHTMLProps<
   HTMLInputElement
 >;
 
-export function Input(props: InputProps) {
+export function Input({ className, ...props }: InputProps) {
   return (
     <input
-      className='focus: w-full rounded border-2 p-2 shadow focus:border-blue-500 focus:shadow-md focus:outline-none'
+      className={`${className} focus: w-full rounded border-2 p-2 shadow focus:border-blue-500 focus:shadow-md focus:outline-none`}
       {...props}
     />
   );

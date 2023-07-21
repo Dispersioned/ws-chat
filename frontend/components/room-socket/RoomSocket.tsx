@@ -4,8 +4,8 @@ import { ConnectionManager } from '../room/ConnectionManager';
 import { ConnectionState } from '../room/ConnectionState';
 import { MessageForm } from './MessageForm';
 import { socket } from './socket';
-import { Message } from '../message';
 import { v4 as uuidv4 } from 'uuid';
+import { Messages } from '../messages';
 
 type RoomSocketProps = {
   username: string;
@@ -48,13 +48,7 @@ export function RoomSocket({ username }: RoomSocketProps) {
 
   return (
     <div className='flex w-full max-w-lg flex-col gap-2'>
-      <div className=' max-h-[70vh] overflow-auto rounded border p-2 pr-2 shadow-sm'>
-        <div className='flex  flex-col gap-1'>
-          {messages.map((message) => (
-            <Message key={message.id} message={message} />
-          ))}
-        </div>
-      </div>
+      <Messages messages={messages} />
       <MessageForm isConnected={isConnected} username={username} />
       <ConnectionState isConnected={isConnected} />
       <ConnectionManager isConnected={isConnected} />

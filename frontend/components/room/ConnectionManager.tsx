@@ -16,12 +16,11 @@ export function ConnectionManager({ isConnected }: ConnectionManagerProps) {
 
   return (
     <>
-      <Button onClick={connect} disabled={isConnected}>
-        Connect
-      </Button>
-      <Button onClick={disconnect} disabled={!isConnected}>
-        Disconnect
-      </Button>
+      {isConnected ? (
+        <Button onClick={disconnect}>Disconnect</Button>
+      ) : (
+        <Button onClick={connect}>Connect</Button>
+      )}
     </>
   );
 }

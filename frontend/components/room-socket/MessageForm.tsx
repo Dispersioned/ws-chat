@@ -32,11 +32,17 @@ export function MessageForm({ isConnected, username }: MessageFormProps) {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <Input value={message} onChange={(e) => setMessage(e.target.value)} />
+    <form onSubmit={onSubmit} className='flex gap-4'>
+      <Input
+        className='w-full'
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder='Type message here'
+      />
       <Button
-        type='submit'
+        className='w-1/3'
         disabled={isLoading || !isConnected || !message.length}
+        type='submit'
       >
         Send
       </Button>

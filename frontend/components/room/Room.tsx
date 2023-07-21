@@ -67,6 +67,16 @@ export function Room({ username }: RoomProps) {
   }, [username]);
 
   useEffect(() => {
+    let reconnectTimer: NodeJS.Timer;
+    if (isConnectionDropped && wasConnectedBeforeError) {
+      reconnectTimer = setTimeout(() => {
+        connect();
+      }, 2000);
+    }
+    return () => clearTimeout(reconnectTimer);
+  }, [connect, isConnectionDropped, wasConnectedBeforeError]);
+
+  useEffect(() => {
     if (!socket.current) connect();
   }, [connect]);
 

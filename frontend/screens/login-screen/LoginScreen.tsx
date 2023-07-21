@@ -11,8 +11,13 @@ export function LoginScreen() {
     setIsLogged(true);
   };
 
+  const classNames = {
+    logged: 'flex min-h-screen items-stretch justify-center',
+    notLogged: 'flex min-h-screen items-center justify-center',
+  };
+
   return (
-    <main className='flex min-h-screen items-center justify-center'>
+    <main className={isLogged ? classNames.logged : classNames.notLogged}>
       {isLogged ? (
         <RoomSocket username={username} />
       ) : (

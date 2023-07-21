@@ -47,7 +47,7 @@ export function RoomSocket({ username }: RoomSocketProps) {
   }, [username]);
 
   return (
-    <div className='flex w-full max-w-lg flex-col gap-2'>
+    <div className='flex w-full max-w-lg basis-full flex-col gap-2 py-2 pt-6'>
       <Messages messages={messages} />
       <MessageForm isConnected={isConnected} username={username} />
       <ConnectionState isConnected={isConnected} />

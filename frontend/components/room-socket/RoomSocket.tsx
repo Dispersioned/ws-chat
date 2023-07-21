@@ -5,6 +5,7 @@ import { ConnectionState } from '../room/ConnectionState';
 import { MessageForm } from './MessageForm';
 import { socket } from './socket';
 import { Message } from '../message';
+import { v4 as uuidv4 } from 'uuid';
 
 type RoomSocketProps = {
   username: string;
@@ -17,8 +18,10 @@ export function RoomSocket({ username }: RoomSocketProps) {
   useEffect(() => {
     function onConnect() {
       const message = {
+        id: uuidv4(),
         date: new Date(),
         username,
+        message: `${username} joined chat`,
       };
       socket.emit('user_connected', message);
       setIsConnected(true);

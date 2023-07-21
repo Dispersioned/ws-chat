@@ -11,12 +11,16 @@ const io = socketIO(server, {
 });
 
 io.on('connection', (socket) => {
-  // socket.id = uuidv4();
-
   console.log(`Socket connected: ${socket.id}`);
 
   socket.on('user_connected', (message) => {
-    console.log('user connected', message);
+    console.log('user joined', message);
+    io.emit('message', message);
+  });
+
+  socket.on('user_disconnected', (message) => {
+    console.log('user left', message);
+    io.emit('message', message);
   });
 
   socket.on('message', (message, recievedCallback) => {

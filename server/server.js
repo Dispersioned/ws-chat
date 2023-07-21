@@ -1,50 +1,36 @@
-const { Server } = require('ws');
 const { v4: uuidv4 } = require('uuid');
+const http = require('http');
+const socketIO = require('socket.io');
 
-const server = new Server(
-  {
-    port: 5000,
+const server = http.createServer();
+
+const io = socketIO(server, {
+  cors: {
+    origin: 'http://localhost:3000',
   },
-  () => {
-    console.log('WebSocket server started on port 5000');
-  }
-);
+});
 
-server.on('connection', (ws) => {
-  // ws.id = uuidv4();
-  ws.on('message', (data) => {
-    const message = JSON.parse(data);
+io.on('connection', (socket) => {
+  // socket.id = uuidv4();
+
+  console.log(`Socket connected: ${socket.id}`);
+
+  socket.on('user_connected', (message) => {
+    console.log('user connected', message);
+  });
+
+  socket.on('message', (message, recievedCallback) => {
+    recievedCallback();
     console.log('message', message);
-    switch (message.event) {
-      case 'message': {
-        broadcaseMessage(JSON.stringify(message));
-        break;
-      }
-      case 'connection': {
-        broadcaseMessage(JSON.stringify(message));
-        break;
-      }
-    }
+    io.emit('message', message);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Socket disconnected: ${socket.id}`);
   });
 });
 
-// const message = {
-//   event: 'message',
-//   id: uuidv4(),
-//   date: new Date(),
-//   username: 'Max',
-//   message: 'привет',
-// };
-
-function broadcaseMessage(message) {
-  server.clients.forEach((client) => {
-    client.send(message);
-  });
-}
-// function broadcaseMessage(message, id) {
-//   server.clients.forEach((client) => {
-//     if (client.id === id) {
-//       client.send(JSON.stringify(message));
-//     }
-//   });
-// }
+const port = 5000;
+server.listen(port, () => {
+  console.log(`WebSocket server started on port ${port}`);
+});

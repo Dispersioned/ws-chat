@@ -1,4 +1,4 @@
-import { Room } from '@/components/room';
+import { RoomSocket } from '@/components/room-socket';
 import { Button } from '@/components/tailwind/button';
 import { Input } from '@/components/tailwind/input';
 import { useState } from 'react';
@@ -14,7 +14,7 @@ export function LoginScreen() {
   return (
     <main className='flex min-h-screen items-center justify-center'>
       {isLogged ? (
-        <Room username={username} />
+        <RoomSocket username={username} />
       ) : (
         <form
           onSubmit={onJoin}

@@ -1,16 +1,9 @@
 import { IMessage } from '@/types/chat';
-import {
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Message } from '../message';
-import { Button } from '../tailwind/button';
-import { Input } from '../tailwind/input';
+import { useEffect, useState } from 'react';
+import { ConnectionManager } from '../room/ConnectionManager';
+import { ConnectionState } from '../room/ConnectionState';
+import { MessageForm } from './MessageForm';
+import { socket } from './socket';
 
 type RoomSocketProps = {
   username: string;
@@ -18,90 +11,39 @@ type RoomSocketProps = {
 
 export function RoomSocket({ username }: RoomSocketProps) {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [wasConnectedBeforeError, setWasConnectedBeforeError] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [isConnectionDropped, setIsConnectionDropped] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const socket = useRef<WebSocket | null>(null);
-
-  const clearConnection = () => {
-    setIsConnected(false);
-    setIsConnectionDropped(false);
-    setError(null);
-    socket.current?.close();
-    socket.current = null;
-  };
-
-  const connect = useCallback(() => {
-    clearConnection();
-    socket.current = new WebSocket('ws://localhost:5000');
-
-    socket.current.onopen = () => {
+  useEffect(() => {
+    function onConnect() {
       setIsConnected(true);
-      setWasConnectedBeforeError(true);
-      const message: IMessage = {
-        event: 'connection',
-        username,
-        id: uuidv4(),
-        date: new Date(),
-        message: 'подключился к чату',
-      };
-      socket.current?.send(JSON.stringify(message));
-    };
-
-    socket.current.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      setMessages((messages) => [...messages, message]);
-    };
-
-    socket.current.onclose = (e) => {
-      setIsConnected(false);
-      setIsConnectionDropped(true);
-      setError('Подключение не удалось или было прервано');
-    };
-    socket.current.onerror = (e) => {
-      setIsConnected(false);
-      setError('Произошла ошибка при подключении к серверу');
-    };
-  }, [username]);
-
-  useEffect(() => {
-    let reconnectTimer: NodeJS.Timer;
-    if (isConnectionDropped && wasConnectedBeforeError) {
-      reconnectTimer = setTimeout(() => {
-        connect();
-      }, 2000);
     }
-    return () => clearTimeout(reconnectTimer);
-  }, [connect, isConnectionDropped, wasConnectedBeforeError]);
 
-  useEffect(() => {
-    if (!socket.current) connect();
-  }, [connect]);
+    function onDisconnect() {
+      setIsConnected(false);
+    }
 
-  const [message, setMessage] = useState('');
+    // function onFooEvent(msg: IMessage) {
+    //   setMessages((messages) => [...messages, msg]);
+    // }
 
-  const onMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  };
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    // socket.on('foo', onFooEvent);
 
-  const onSendMessage = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const msg: IMessage = {
-      event: 'message',
-      id: uuidv4(),
-      date: new Date().toString(),
-      message,
-      username,
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      // socket.off('foo', onFooEvent);
     };
-    socket.current?.send(JSON.stringify(msg));
-    setMessage('');
-  };
+  }, []);
 
   return (
     <div className='flex w-full max-w-lg flex-col gap-2'>
-      <div className='flex flex-col items-center gap-2'>
+      <ConnectionState isConnected={isConnected} />
+      <ConnectionManager isConnected={isConnected} />
+      <MessageForm isConnected={isConnected} username={username} />
+      {/* {socket.current?.connected ? 'true' : 'false'} */}
+      {/* <div className='flex flex-col items-center gap-2'>
         <div>
           {(() => {
             if (error) return error;
@@ -140,7 +82,7 @@ export function RoomSocket({ username }: RoomSocketProps) {
             </div>
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 }

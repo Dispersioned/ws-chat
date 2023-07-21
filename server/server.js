@@ -15,13 +15,14 @@ io.on('connection', (socket) => {
 
   console.log(`Socket connected: ${socket.id}`);
 
-  socket.on('user_connection', (message) => {
-    console.log('message', message);
+  socket.on('user_connected', (message) => {
+    console.log('user connected', message);
   });
 
   socket.on('message', (message, recievedCallback) => {
     recievedCallback();
     console.log('message', message);
+    io.emit('message', message);
   });
 
   socket.on('disconnect', () => {

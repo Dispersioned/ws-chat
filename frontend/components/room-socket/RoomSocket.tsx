@@ -4,6 +4,7 @@ import { ConnectionManager } from '../room/ConnectionManager';
 import { ConnectionState } from '../room/ConnectionState';
 import { MessageForm } from './MessageForm';
 import { socket } from './socket';
+import { Message } from '../message';
 
 type RoomSocketProps = {
   username: string;
@@ -15,6 +16,11 @@ export function RoomSocket({ username }: RoomSocketProps) {
 
   useEffect(() => {
     function onConnect() {
+      const message = {
+        date: new Date(),
+        username,
+      };
+      socket.emit('user_connected', message);
       setIsConnected(true);
     }
 
@@ -22,26 +28,31 @@ export function RoomSocket({ username }: RoomSocketProps) {
       setIsConnected(false);
     }
 
-    // function onFooEvent(msg: IMessage) {
-    //   setMessages((messages) => [...messages, msg]);
-    // }
+    function onMessageReceieve(msg: IMessage) {
+      setMessages((messages) => [...messages, msg]);
+    }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    // socket.on('foo', onFooEvent);
+    socket.on('message', onMessageReceieve);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      // socket.off('foo', onFooEvent);
+      socket.off('message', onMessageReceieve);
     };
-  }, []);
+  }, [username]);
 
   return (
     <div className='flex w-full max-w-lg flex-col gap-2'>
       <ConnectionState isConnected={isConnected} />
       <ConnectionManager isConnected={isConnected} />
       <MessageForm isConnected={isConnected} username={username} />
+      <div>
+        {messages.map((message) => (
+          <Message key={message.id} message={message} />
+        ))}
+      </div>
       {/* {socket.current?.connected ? 'true' : 'false'} */}
       {/* <div className='flex flex-col items-center gap-2'>
         <div>

@@ -24,6 +24,8 @@ export function MessageForm({ isConnected, username }: MessageFormProps) {
       message,
     };
 
+    setMessage('');
+
     socket.timeout(5000).emit('message', msg, () => {
       setIsLoading(false);
     });
@@ -31,7 +33,7 @@ export function MessageForm({ isConnected, username }: MessageFormProps) {
 
   return (
     <form onSubmit={onSubmit}>
-      <Input onChange={(e) => setMessage(e.target.value)} />
+      <Input value={message} onChange={(e) => setMessage(e.target.value)} />
       <Button
         type='submit'
         disabled={isLoading || !isConnected || !message.length}

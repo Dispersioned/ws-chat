@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 function setupHandlers(io, socket) {
   function sendUsers() {
     const users = db.users.findAll();
-    io.in(socket.roomId).emit('messages', users);
+    io.in(socket.roomId).emit('users', users);
   }
 
   function addUser(userDto) {

@@ -1,19 +1,33 @@
 class MockDB {
-  messages = [];
+  data = [];
 
-  getAllMessages() {
-    return this.messages;
+  constructor(data) {
+    if (!Array.isArray(data)) return;
+    this.data = data;
   }
 
-  add(message) {
-    this.messages.push(message);
+  getAll() {
+    return this.data;
   }
 
-  deleteById(messageId) {
-    this.messages.findIndex((msg) => msg.id === messageId);
+  getById(id) {
+    return this.data.find((item) => item.id === id);
+  }
+
+  add(item) {
+    this.data.push(item);
+  }
+
+  removeById(id) {
+    this.data = this.data.filter((item) => item.id !== id);
   }
 }
 
-const db = new MockDB();
+class DataBase {
+  messages = new MockDB();
+  users = new MockDB();
+}
+
+const db = new DataBase();
 
 module.exports = db;

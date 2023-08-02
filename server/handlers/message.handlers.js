@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 function setupHandlers(io, socket) {
   function sendMessages() {
-    const messages = db.messages.getAll();
+    const messages = db.messages.findAll();
     io.in(socket.roomId).emit('messages', messages);
   }
 

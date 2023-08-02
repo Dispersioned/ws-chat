@@ -3,12 +3,12 @@ const { v4: uuidv4 } = require('uuid');
 
 function setupHandlers(io, socket) {
   function sendUsers() {
-    const users = db.users.getAll();
+    const users = db.users.findAll();
     io.in(socket.roomId).emit('messages', users);
   }
 
   function addUser(newUser) {
-    const user = db.users.getById(newUser.id);
+    const user = db.users.findById(newUser.id);
 
     if (!user) {
       db.users.add({ ...user, online: true });

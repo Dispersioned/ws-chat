@@ -6,11 +6,11 @@ class MockDB {
     this.data = data;
   }
 
-  getAll() {
+  findAll() {
     return this.data;
   }
 
-  getById(id) {
+  findById(id) {
     return this.data.find((item) => item.id === id);
   }
 

@@ -21,6 +21,13 @@ class MockDB {
   removeById(id) {
     this.data = this.data.filter((item) => item.id !== id);
   }
+
+  updateById(id, data) {
+    const index = this.data.findIndex((item) => item.id === id);
+    if (index === -1) throw new Error('not found');
+
+    this.data[index] = data;
+  }
 }
 
 class DataBase {

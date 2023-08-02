@@ -1,6 +1,7 @@
 const { PORT } = require('./config');
 const { log } = require('./logger');
 const setupMessageHandlers = require('./handlers/message.handlers');
+const setupUserHandlers = require('./handlers/user.handlers');
 
 const server = require('http').createServer();
 
@@ -19,6 +20,7 @@ const onConnection = (socket) => {
   socket.join(roomId);
 
   setupMessageHandlers(io, socket);
+  setupUserHandlers(io, socket);
 
   socket.on('disconnect', () => {
     log('User disconnected');

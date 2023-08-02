@@ -12,7 +12,7 @@ export function Home() {
 
   const onJoin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate(roomId);
+    navigate(roomId, { state: { username } });
   };
 
   return (

@@ -7,16 +7,17 @@ import { useLocalStorage } from './useLocalStorage';
 
 const SERVER_URL = 'http://localhost:5000';
 
-export function useChat(roomId: string) {
+export function useChat(roomId?: string, username?: string) {
   const [users, setUsers] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
 
   const [userId] = useLocalStorage('userId', uuidv4());
-  const [username] = useLocalStorage('username');
 
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
+    if (!roomId || !username) return () => {};
+
     socketRef.current = io(SERVER_URL, {
       query: { roomId },
     });

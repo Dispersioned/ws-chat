@@ -1,7 +1,6 @@
 import { IMessage } from '@/types/chat';
 import { useEffect, useState } from 'react';
 import { ConnectionManager } from '../room/ConnectionManager';
-import { ConnectionState } from '../room/ConnectionState';
 import { MessageForm } from './MessageForm';
 import { socket } from './socket';
 import { v4 as uuidv4 } from 'uuid';

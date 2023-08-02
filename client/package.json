@@ -22,11 +22,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
-    "typescript": "^4.9.4"
+    "socket.io-client": "^4.7.1",
+    "typescript": "^4.9.4",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.18.6",
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.0.0",
     "copy-webpack-plugin": "^11.0.0",

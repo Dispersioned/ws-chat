@@ -7,11 +7,11 @@ function setupHandlers(io, socket) {
     io.in(socket.roomId).emit('messages', users);
   }
 
-  function addUser(newUser) {
-    const user = db.users.findById(newUser.id);
+  function addUser(userDto) {
+    const user = db.users.findById(userDto.id);
 
     if (!user) {
-      db.users.add({ ...user, online: true });
+      db.users.add({ ...userDto, online: true });
     } else {
       db.users.updateById(user.id, { ...user, online: true });
     }
@@ -19,15 +19,15 @@ function setupHandlers(io, socket) {
     sendUsers();
   }
 
-  function removeMessage(messageId) {
+  function removeUser(messageId) {
     db.messages.removeById(messageId);
 
-    sendMessages();
+    sendUsers();
   }
 
-  socket.on('message:get', sendMessages);
-  socket.on('message:add', addUser);
-  socket.on('message:remove', removeMessage);
+  socket.on('user:get', sendUsers);
+  socket.on('user:add', addUser);
+  socket.on('user:leave', removeUser);
 }
 
 module.exports = setupHandlers;
